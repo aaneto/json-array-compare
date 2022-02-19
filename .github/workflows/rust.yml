@@ -1,0 +1,62 @@
+name: Release
+
+on: push
+
+jobs:
+  release-ubuntu:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: hecrj/setup-rust-action@master
+      with:
+        rust-version: stable
+
+    - uses: actions/checkout@v1
+    - name: Build
+      run: cargo build --release
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/json-array-compare
+        asset_name: ubuntu-json-array-compare
+        tag: ${{ github.event.ref }}
+      
+  release-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: hecrj/setup-rust-action@master
+      with:
+        rust-version: stable
+
+    - uses: actions/checkout@v1
+
+    - name: Build
+      run: cargo build --release
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/json-array-compare.exe
+        asset_name: windows-json-array-compare.exe
+        tag: ${{ github.event.ref }}
+  
+  release-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: hecrj/setup-rust-action@master
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: Build
+      run: cargo build --release
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/json-array-compare
+        asset_name: macos-json-array-compare
+        tag: ${{ github.event.ref }}
